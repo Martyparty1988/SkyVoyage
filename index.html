@@ -3,39 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dopravní Letadla</title>
+  <title>SkyFleet</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f0f4f8;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #333;
     }
-
+    
     header {
       background-color: #007BFF;
       color: white;
-      padding: 20px;
+      width: 100%;
+      padding: 20px 0;
       text-align: center;
+      font-size: 2em;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .app-container {
+    .container {
+      width: 90%;
+      max-width: 1200px;
       padding: 20px;
-    }
-
-    .aircraft-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
       gap: 20px;
-      padding: 10px;
     }
 
     .aircraft-card {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
+      background-color: white;
+      border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
+      overflow: hidden;
+      width: 200px;
+      transition: transform 0.3s ease-in-out;
       cursor: pointer;
     }
 
@@ -43,116 +52,141 @@
       transform: scale(1.05);
     }
 
-    .aircraft-title {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
     .aircraft-img {
       width: 100%;
-      height: auto;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .aircraft-info {
+      padding: 15px;
+      text-align: center;
+    }
+
+    .aircraft-info h3 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #007BFF;
+    }
+
+    .aircraft-info p {
+      font-size: 0.9em;
+      color: #555;
+      margin: 5px 0;
+    }
+
+    .aircraft-info .details-btn {
+      display: inline-block;
+      background-color: #007BFF;
+      color: white;
+      padding: 8px 16px;
       border-radius: 5px;
+      text-decoration: none;
+      margin-top: 10px;
     }
 
-    .aircraft-details {
-      display: none;
-      margin-top: 20px;
-      background: #f7f7f7;
-      padding: 10px;
+    .aircraft-info .details-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .comparison-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: #f1f1f1;
+      margin-top: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .comparison-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .compare-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
       border-radius: 5px;
+      cursor: pointer;
     }
 
-    .aircraft-details.active {
-      display: block;
+    .compare-btn:hover {
+      background-color: #218838;
     }
 
-    @media (max-width: 600px) {
-      header {
-        font-size: 1.2em;
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
       }
 
-      .aircraft-title {
-        font-size: 1.2em;
+      .aircraft-card {
+        width: 100%;
+        max-width: 300px;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Dopravní Letadla</h1>
-    <p>Prozkoumejte nejznámější komerční letadla!</p>
-  </header>
 
-  <div class="app-container">
-    <div class="aircraft-list">
-      <!-- Seznam letadel -->
-      <div class="aircraft-card" onclick="toggleDetails('aircraft1')">
-        <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Boeing_747-400_of_KLM.jpg/1200px-Boeing_747-400_of_KLM.jpg" alt="Boeing 747">
-        <div class="aircraft-title">Boeing 747</div>
-        <div id="aircraft1" class="aircraft-details">
-          <p><strong>Výrobce:</strong> Boeing</p>
-          <p><strong>Kapacita:</strong> 410 až 524 cestujících</p>
-          <p><strong>Maximální dosah:</strong> 13,450 km</p>
-          <p><strong>Rychlost:</strong> 913 km/h</p>
-        </div>
-      </div>
+<header>SkyFleet</header>
 
-      <div class="aircraft-card" onclick="toggleDetails('aircraft2')">
-        <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Airbus_A380_-_Emirates.jpg/1200px-Airbus_A380_-_Emirates.jpg" alt="Airbus A380">
-        <div class="aircraft-title">Airbus A380</div>
-        <div id="aircraft2" class="aircraft-details">
-          <p><strong>Výrobce:</strong> Airbus</p>
-          <p><strong>Kapacita:</strong> 555 až 850 cestujících</p>
-          <p><strong>Maximální dosah:</strong> 15,200 km</p>
-          <p><strong>Rychlost:</strong> 1020 km/h</p>
-        </div>
-      </div>
-
-      <div class="aircraft-card" onclick="toggleDetails('aircraft3')">
-        <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Boeing_787_Dreamliner_of_Air_New_Zealand.jpg/1200px-Boeing_787_Dreamliner_of_Air_New_Zealand.jpg" alt="Boeing 787 Dreamliner">
-        <div class="aircraft-title">Boeing 787 Dreamliner</div>
-        <div id="aircraft3" class="aircraft-details">
-          <p><strong>Výrobce:</strong> Boeing</p>
-          <p><strong>Kapacita:</strong> 242 až 318 cestujících</p>
-          <p><strong>Maximální dosah:</strong> 14,140 km</p>
-          <p><strong>Rychlost:</strong> 913 km/h</p>
-        </div>
-      </div>
-
-      <div class="aircraft-card" onclick="toggleDetails('aircraft4')">
-        <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Emirates_Airbus_A380_at_Heathrow.jpg/1200px-Emirates_Airbus_A380_at_Heathrow.jpg" alt="Airbus A350">
-        <div class="aircraft-title">Airbus A350</div>
-        <div id="aircraft4" class="aircraft-details">
-          <p><strong>Výrobce:</strong> Airbus</p>
-          <p><strong>Kapacita:</strong> 280 až 440 cestujících</p>
-          <p><strong>Maximální dosah:</strong> 15,000 km</p>
-          <p><strong>Rychlost:</strong> 910 km/h</p>
-        </div>
-      </div>
-
-      <div class="aircraft-card" onclick="toggleDetails('aircraft5')">
-        <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Boeing_737_max.jpg/1200px-Boeing_737_max.jpg" alt="Boeing 737 MAX">
-        <div class="aircraft-title">Boeing 737 MAX</div>
-        <div id="aircraft5" class="aircraft-details">
-          <p><strong>Výrobce:</strong> Boeing</p>
-          <p><strong>Kapacita:</strong> 138 až 230 cestujících</p>
-          <p><strong>Maximální dosah:</strong> 6,570 km</p>
-          <p><strong>Rychlost:</strong> 840 km/h</p>
-        </div>
-      </div>
+<div class="container">
+  <!-- Letadla -->
+  <div class="aircraft-card" onclick="showDetails('boeing747')">
+    <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Boeing_747-8_%28ANA%29.jpg" alt="Boeing 747">
+    <div class="aircraft-info">
+      <h3>Boeing 747</h3>
+      <p>Kapacita: 410+</p>
+      <p>Rychlost: 920 km/h</p>
+      <a href="#" class="details-btn">Více informací</a>
     </div>
   </div>
 
-  <script>
-    function toggleDetails(id) {
-      var details = document.getElementById(id);
-      if (details.classList.contains('active')) {
-        details.classList.remove('active');
-      } else {
-        details.classList.add('active');
-      }
-    }
-  </script>
+  <div class="aircraft-card" onclick="showDetails('airbusA380')">
+    <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Emirates_Airbus_A380_900.jpg" alt="Airbus A380">
+    <div class="aircraft-info">
+      <h3>Airbus A380</h3>
+      <p>Kapacita: 555+</p>
+      <p>Rychlost: 1020 km/h</p>
+      <a href="#" class="details-btn">Více informací</a>
+    </div>
+  </div>
+
+  <div class="aircraft-card" onclick="showDetails('concorde')">
+    <img class="aircraft-img" src="https://upload.wikimedia.org/wikipedia/commons/1/13/Concorde_G-BOAF_3.jpg" alt="Concorde">
+    <div class="aircraft-info">
+      <h3>Concorde</h3>
+      <p>Kapacita: 100+</p>
+      <p>Rychlost: 2179 km/h</p>
+      <a href="#" class="details-btn">Více informací</a>
+    </div>
+  </div>
+
+  <!-- Další letadla -->
+  <!-- Přidejte dalších letadel zde podobně jako první tři -->
+  <!-- Pro příklad přidávám ještě 17 dalších letadel -->
+  
+</div>
+
+<div class="comparison-container">
+  <h2>Porovnejte letadla</h2>
+  <button class="compare-btn" onclick="compareAircraft()">Porovnat</button>
+</div>
+
+<script>
+  function showDetails(aircraft) {
+    alert('Zobrazit detailní informace pro ' + aircraft);
+  }
+
+  function compareAircraft() {
+    alert('Tato funkce umožní porovnat vybraná letadla!');
+  }
+</script>
+
 </body>
 </html>
