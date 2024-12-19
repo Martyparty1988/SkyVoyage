@@ -1,252 +1,160 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkyFleet</title>
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JetGallery – Letadla</title>
+<style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f4f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      min-height: 100vh;
+        font-family: sans-serif; margin:0; padding:0; background:#f0f0f0;
     }
-
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 20px;
-      width: 100%;
-      text-align: center;
+    header, footer {
+        background:#333; color:white; padding:10px; text-align:center;
     }
-
     .container {
-      width: 90%;
-      max-width: 1200px;
+        max-width: 800px; margin:0 auto; padding:20px;
     }
-
-    .aircraft-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      margin: 20px 0;
+    h1 {
+        margin-bottom:20px;
     }
-
-    .aircraft-card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: center;
-      cursor: pointer;
+    input[type="text"] {
+        width:100%; padding:8px; margin-bottom:20px; border:1px solid #ccc; border-radius:5px;
     }
-
-    .aircraft-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    .planes-list {
+        display:grid; grid-template-columns:1fr 1fr; gap:20px;
     }
-
-    .aircraft-card img {
-      max-width: 100%;
-      border-radius: 10px;
+    .plane-card {
+        background:white; padding:10px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        display:flex; flex-direction:column; align-items:center; text-align:center;
     }
-
-    .aircraft-card h3 {
-      margin-top: 10px;
-      font-size: 1.2em;
+    .plane-card img {
+        max-width:100%; height:auto; border-radius:5px; object-fit:cover;
     }
-
-    .aircraft-card p {
-      font-size: 1em;
-      color: #555;
+    .plane-name {
+        font-weight:bold; margin-top:10px;
     }
-
-    .compare-section {
-      margin: 20px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-direction: column;
+    .plane-info {
+        font-size:0.9em; color:#555; margin-top:5px;
     }
-
-    .compare-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+    .offline-info {
+        background:yellow; padding:10px; margin-bottom:20px; display:none; text-align:center;
     }
-
-    .compare-btn:hover {
-      background-color: #218838;
+    @media(max-width:600px) {
+        .planes-list {
+            grid-template-columns:1fr;
+        }
     }
-
-    .aircraft-detail {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-      display: none;
-    }
-
-    .aircraft-detail.active {
-      display: block;
-    }
-
-    .aircraft-detail h4 {
-      margin-top: 0;
-    }
-
-    .aircraft-detail p {
-      margin: 5px 0;
-    }
-
-    .aircraft-detail ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    @media (max-width: 768px) {
-      .aircraft-list {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .aircraft-list {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+</style>
 </head>
 <body>
-  <header>
-    <h1>SkyFleet</h1>
-    <p>Prozkoumejte svět komerčních letadel!</p>
-  </header>
-  <div class="container">
-    <div class="aircraft-list">
-      <!-- Aircraft Cards -->
-      <div class="aircraft-card" data-aircraft="boeing747">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Boeing_747-8i_EuroWings_%28cropped%29.jpg/800px-Boeing_747-8i_EuroWings_%28cropped%29.jpg" alt="Boeing 747">
-        <h3>Boeing 747</h3>
-        <p>Kapacita: 524 cestujících</p>
-      </div>
+<header>
+    <h1>JetGallery</h1>
+</header>
 
-      <div class="aircraft-card" data-aircraft="airbusA380">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Airbus_A380-800_Neo_UK_%28Aviation_Pix%29.jpg/800px-Airbus_A380-800_Neo_UK_%28Aviation_Pix%29.jpg" alt="Airbus A380">
-        <h3>Airbus A380</h3>
-        <p>Kapacita: 850 cestujících</p>
-      </div>
+<div class="container">
+    <div class="offline-info" id="offlineInfo">Jste offline – některé obrázky se nemusí načíst.</div>
+    <input type="text" id="searchInput" placeholder="Hledat letadlo podle názvu nebo výrobce..." />
+    <div id="planesContainer" class="planes-list"></div>
+</div>
 
-      <div class="aircraft-card" data-aircraft="concorde">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Concorde_F-BVFC.jpg/800px-Concorde_F-BVFC.jpg" alt="Concorde">
-        <h3>Concorde</h3>
-        <p>Maximální rychlost: Mach 2</p>
-      </div>
+<footer>
+    &copy; 2024 JetGallery – Data z Wikipedie / Wikimedia Commons.
+</footer>
 
-      <div class="aircraft-card" data-aircraft="boeing737">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Boeing_737-800_ANA.jpg/800px-Boeing_737-800_ANA.jpg" alt="Boeing 737">
-        <h3>Boeing 737</h3>
-        <p>Kapacita: 230 cestujících</p>
-      </div>
+<!-- Vložený JSON s daty o letadlech -->
+<script id="planes-data" type="application/json">
+[
+    {
+        "name": "Concorde",
+        "manufacturer": "Aérospatiale / BAC",
+        "year": 1969,
+        "maxSpeed": "Mach 2.04",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/British_Airways_Concorde_G-BOAC_03.jpg"
+    },
+    {
+        "name": "Boeing 747",
+        "manufacturer": "Boeing",
+        "year": 1969,
+        "maxSpeed": "Mach 0.92",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Boeing_747-8_Freighter_N6067E_BFI_2010-11-17.jpg"
+    },
+    {
+        "name": "Airbus A380",
+        "manufacturer": "Airbus",
+        "year": 2005,
+        "maxSpeed": "Mach 0.89",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Airbus_A380_blue_sky.jpg"
+    },
+    {
+        "name": "Tupolev Tu-144",
+        "manufacturer": "Tupolev",
+        "year": 1968,
+        "maxSpeed": "Mach 2.15",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/Tupolev_Tu-144S_in_flight.jpg"
+    },
+    {
+        "name": "McDonnell Douglas DC-10",
+        "manufacturer": "McDonnell Douglas",
+        "year": 1970,
+        "maxSpeed": "Mach 0.88",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/McDonnell_Douglas_DC-10-30%2C_LTU_-_Lufttransport-Unternehmen_AN2122603.jpg"
+    }
+]
+</script>
 
-      <!-- Add other aircrafts similarly -->
-    </div>
+<script>
+// Načtení dat z vloženého skriptu
+const planesData = JSON.parse(document.getElementById('planes-data').textContent);
+const planesContainer = document.getElementById('planesContainer');
+const searchInput = document.getElementById('searchInput');
+const offlineInfo = document.getElementById('offlineInfo');
 
-    <div class="compare-section">
-      <button class="compare-btn" onclick="compareAircrafts()">Porovnat vybraná letadla</button>
-    </div>
+// Detekce online/offline stavu
+function updateOnlineStatus() {
+    if (navigator.onLine) {
+        offlineInfo.style.display = 'none';
+    } else {
+        offlineInfo.style.display = 'block';
+    }
+}
 
-    <div class="aircraft-detail" id="boeing747-detail">
-      <h4>Boeing 747</h4>
-      <p><strong>Typ:</strong> Wide-body, four-engine airliner</p>
-      <p><strong>První let:</strong> 9. února 1969</p>
-      <ul>
-        <li>Maximální rychlost: 1,045 km/h</li>
-        <li>Dolet: 13,450 km</li>
-        <li>Kapacita: 524 cestujících</li>
-        <li><strong>Zajímavost:</strong> První letadlo s dvojitou palubou.</li>
-      </ul>
-    </div>
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
 
-    <div class="aircraft-detail" id="airbusA380-detail">
-      <h4>Airbus A380</h4>
-      <p><strong>Typ:</strong> Wide-body, double-deck airliner</p>
-      <p><strong>První let:</strong> 27. dubna 2005</p>
-      <ul>
-        <li>Maximální rychlost: 1,020 km/h</li>
-        <li>Dolet: 15,200 km</li>
-        <li>Kapacita: 850 cestujících</li>
-        <li><strong>Zajímavost:</strong> Největší komerční letadlo na světě.</li>
-      </ul>
-    </div>
+// Zobrazení letadel
+function renderPlanes(planes) {
+    if(!planes || planes.length === 0) {
+        planesContainer.innerHTML = "<p>Žádná letadla k zobrazení.</p>";
+        return;
+    }
 
-    <!-- Additional aircraft details for each one -->
-
-  </div>
-
-  <script>
-    const aircraftData = {
-      boeing747: {
-        name: "Boeing 747",
-        description: "Wide-body, four-engine airliner",
-        firstFlight: "9. února 1969",
-        maxSpeed: "1,045 km/h",
-        range: "13,450 km",
-        capacity: "524",
-        interestingFact: "První letadlo s dvojitou palubou.",
-      },
-      airbusA380: {
-        name: "Airbus A380",
-        description: "Wide-body, double-deck airliner",
-        firstFlight: "27. dubna 2005",
-        maxSpeed: "1,020 km/h",
-        range: "15,200 km",
-        capacity: "850",
-        interestingFact: "Největší komerční letadlo na světě.",
-      },
-      concorde: {
-        name: "Concorde",
-        description: "Nadzvukové letadlo",
-        firstFlight: "2. března 1969",
-        maxSpeed: "Mach 2",
-        range: "6,000 km",
-        capacity: "100",
-        interestingFact: "První letadlo, které dosáhlo rychlosti nadzvukového letu.",
-      },
-      // Add other aircrafts similarly...
-    };
-
-    const aircraftCards = document.querySelectorAll(".aircraft-card");
-
-    aircraftCards.forEach(card => {
-      card.addEventListener("click", function() {
-        const aircraftId = card.getAttribute("data-aircraft");
-        showAircraftDetail(aircraftId);
-      });
+    let html = '';
+    planes.forEach(plane => {
+        html += `
+        <div class="plane-card">
+            <img src="${plane.imageUrl}" alt="${plane.name}" 
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTIwJyBoZWlnaHQ9JzgwJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjx0ZXh0IHg9JzYnIHk9JzQwJyBmaWxsPScjY2NjJyBmb250LXNpemU9JzE0JyBmb250LWZhbWlseT0nc2Fucy1zZXJpZic+TmVscmplIG5hY2jEmWvuPC90ZXh0Pjwvc3ZnPg=='">
+            <div class="plane-name">${plane.name}</div>
+            <div class="plane-info">${plane.manufacturer} (${plane.year})<br>Rychlost: ${plane.maxSpeed}</div>
+        </div>
+        `;
     });
+    planesContainer.innerHTML = html;
+}
 
-    function showAircraftDetail(aircraftId) {
-      const details = document.querySelectorAll(".aircraft-detail");
-      details.forEach(detail => detail.classList.remove("active"));
+// První vykreslení
+renderPlanes(planesData);
 
-      const detailElement = document.getElementById(`${aircraftId}-detail`);
-      detailElement.classList.add("active");
-    }
-
-    function compareAircrafts() {
-      alert("Porovnání letadel není implementováno, ale lze přidat!");
-    }
-  </script>
+// Vyhledávání
+searchInput.addEventListener('input', () => {
+    const searchValue = searchInput.value.toLowerCase();
+    const filtered = planesData.filter(plane => {
+        return plane.name.toLowerCase().includes(searchValue) ||
+               plane.manufacturer.toLowerCase().includes(searchValue);
+    });
+    renderPlanes(filtered);
+});
+</script>
 </body>
 </html>
