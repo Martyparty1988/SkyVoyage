@@ -61,7 +61,7 @@
     &copy; 2024 JetGallery – Data z Wikipedie / Wikimedia Commons.
 </footer>
 
-<!-- Vložený JSON s daty o letadlech -->
+<!-- Data o letadlech přímo v HTML -->
 <script id="planes-data" type="application/json">
 [
     {
@@ -70,6 +70,13 @@
         "year": 1969,
         "maxSpeed": "Mach 2.04",
         "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/British_Airways_Concorde_G-BOAC_03.jpg"
+    },
+    {
+        "name": "Tupolev Tu-144",
+        "manufacturer": "Tupolev",
+        "year": 1968,
+        "maxSpeed": "Mach 2.15",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/Tupolev_Tu-144S_in_flight.jpg"
     },
     {
         "name": "Boeing 747",
@@ -86,24 +93,51 @@
         "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Airbus_A380_blue_sky.jpg"
     },
     {
-        "name": "Tupolev Tu-144",
-        "manufacturer": "Tupolev",
-        "year": 1968,
-        "maxSpeed": "Mach 2.15",
-        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/Tupolev_Tu-144S_in_flight.jpg"
-    },
-    {
         "name": "McDonnell Douglas DC-10",
         "manufacturer": "McDonnell Douglas",
         "year": 1970,
         "maxSpeed": "Mach 0.88",
         "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/McDonnell_Douglas_DC-10-30%2C_LTU_-_Lufttransport-Unternehmen_AN2122603.jpg"
+    },
+    {
+        "name": "Boeing 777",
+        "manufacturer": "Boeing",
+        "year": 1994,
+        "maxSpeed": "Mach 0.89",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Boeing_777-300ER_EMIRATES_%28cropped%29.jpg"
+    },
+    {
+        "name": "Boeing 787 Dreamliner",
+        "manufacturer": "Boeing",
+        "year": 2009,
+        "maxSpeed": "Mach 0.85",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/de/Boeing_787-8_Dreamliner_ZA001_in_flight.jpg"
+    },
+    {
+        "name": "Airbus A350",
+        "manufacturer": "Airbus",
+        "year": 2013,
+        "maxSpeed": "Mach 0.89",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Airbus_A350-900_F-WWCF_MSN2_air_to_air.jpg"
+    },
+    {
+        "name": "Ilyushin Il-96",
+        "manufacturer": "Ilyushin",
+        "year": 1988,
+        "maxSpeed": "Mach 0.86",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/27/Ilyushin_Il-96-300RA_%28RA-96020%29_in_flight.jpg"
+    },
+    {
+        "name": "Lockheed L-1011 TriStar",
+        "manufacturer": "Lockheed",
+        "year": 1970,
+        "maxSpeed": "Mach 0.90",
+        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Lockheed_L-1011_Emery_Worldwide.jpg"
     }
 ]
 </script>
 
 <script>
-// Načtení dat z vloženého skriptu
 const planesData = JSON.parse(document.getElementById('planes-data').textContent);
 const planesContainer = document.getElementById('planesContainer');
 const searchInput = document.getElementById('searchInput');
@@ -117,12 +151,10 @@ function updateOnlineStatus() {
         offlineInfo.style.display = 'block';
     }
 }
-
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
-// Zobrazení letadel
 function renderPlanes(planes) {
     if(!planes || planes.length === 0) {
         planesContainer.innerHTML = "<p>Žádná letadla k zobrazení.</p>";
@@ -134,7 +166,7 @@ function renderPlanes(planes) {
         html += `
         <div class="plane-card">
             <img src="${plane.imageUrl}" alt="${plane.name}" 
-                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTIwJyBoZWlnaHQ9JzgwJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjx0ZXh0IHg9JzYnIHk9JzQwJyBmaWxsPScjY2NjJyBmb250LXNpemU9JzE0JyBmb250LWZhbWlseT0nc2Fucy1zZXJpZic+TmVscmplIG5hY2jEmWvuPC90ZXh0Pjwvc3ZnPg=='">
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTIwJyBoZWlnaHQ9JzgwJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjx0ZXh0IHg9JzYnIHk9JzQwJyBmaWxsPScjY2NjJyBmb250LXNpemU9JzE0JyBmb250LWZhbWlseT0nc2Fucy1zZXJpZic+TmVscmplIG5hY2hPem7EmW5pPC90ZXh0Pjwvc3ZnPg=='">
             <div class="plane-name">${plane.name}</div>
             <div class="plane-info">${plane.manufacturer} (${plane.year})<br>Rychlost: ${plane.maxSpeed}</div>
         </div>
